@@ -65,6 +65,7 @@ $(() => {
   });
 
   $( "#clearAll" ).on( "click", function(){
+    rowID = 1;
     myLibrary = {};
     $( ".tableRow" ).remove();
   });
