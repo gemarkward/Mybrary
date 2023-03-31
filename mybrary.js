@@ -30,7 +30,7 @@ class Book {
   }
 
   addToLibrary() {
-    myLibrary[rowID] = this;
+    myLibrary[this.id] = this;
     updateLibraryDisplay(this);
   }
 
