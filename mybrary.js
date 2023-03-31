@@ -1,21 +1,23 @@
 let myLibrary = {};
-let rowID = 0;
+let rowID = 1;
+
+function pad(num, size) {
+  num = num.toString();
+  while (num.length < size) num = "0" + num;
+  return num;
+}
 
 function updateLibraryDisplay(element) {
   let table = $("#libraryDisplay");
   let popUp = $("#submitBook");
-  var rowStr = parseInt(element.rowID).toString();
-  var newRow = "'<tr id=\""+rowStr+"\"><td>"+element.title+"</td><td>"+element.author+"</td><td>"+element.pages.toString()+"</td><td>"+element.read.toString()+"</td><td><button class=\"deleteBook\">Delete Book</button></tr>'";
+  var rowStr = pad(parseInt(element.id), 4);
+  var newRow = "'<tr class=\"tableRow\"><td>"+rowStr+"</td><td>"+element.title+"</td><td>"+element.author+"</td><td>"+element.pages.toString()+"</td><td>"+element.read.toString()+"</td><td><button id=\"delete"+rowStr+"\">Delete Book</button></tr>'";
   table.append(newRow);
-
-  $( ".deleteBook ").on( "click", function(element) {
-    var rowStr = parseInt(element.rowID).toString();
-    var rowToDelete = $("#"+rowStr);
-    rowToDelete.remove();
-    delete myLibrary[element.rowID];
-  });
-
   popUp.css("display", "none");
+  rowID += 1;
+  $( "#delete"+rowStr ).on( "click", function(){
+    $(this).parent().parent().remove();
+  });
 }
 
 class Book {
@@ -25,13 +27,19 @@ class Book {
     this.pages = nPages;
     this.read = read;
     this.id = rowID;
-    rowID += 1;
   }
 
   addToLibrary() {
     myLibrary[rowID] = this;
     updateLibraryDisplay(this);
   }
+
+  removeBook(){
+    var rowStr = parseInt(this.id).toString();
+    var rowToDelete = $("#"+rowStr);
+    rowToDelete.remove();
+    delete myLibrary[this.id];
+  };
 };
 
 $(() => {
@@ -54,5 +62,10 @@ $(() => {
     var newBook = new Book(book_title.val(), book_author.val(), pagecount.val(), bookVal);
     newBook.addToLibrary();
     this.reset();
+  });
+
+  $( "#clearAll" ).on( "click", function(){
+    myLibrary = {};
+    $( ".tableRow" ).remove();
   });
 });
